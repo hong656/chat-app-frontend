@@ -24,10 +24,8 @@ data() {
     menuItems: [
         { name: "Home", link: "/" },
         { name: "Dashboard", link: "/dashboard" },
-        { name: "Log in", link: "auth/login" },
-        { name: "Register", link: "auth/register" },
-        { name: "Log out", link: "/logout" },
-        { name: "Welcome to dasboard page", link: "/how-it-works" },
+        { name: "Log out", link: "" },
+        { name: "Welcome to dasboard page", link: "" },
     ],
     };
 },
