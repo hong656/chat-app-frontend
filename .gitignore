@@ -22,3 +22,8 @@ logs
 .env
 .env.*
 !.env.example
+
+# Nuxt config and package files
+nuxt.config.ts
+package.json
+package-lock.json

@@ -29,11 +29,11 @@
               </div>
               <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
             </div>
-            <button type="submit" :disabled="loading" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+            <button type="submit" :disabled="loading" class="hover:cursor-pointer border w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
               {{ loading ? 'Logging in...' : 'Log in' }}
             </button>
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-              Don't have an account yet? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Register</a>
+              Don't have an account yet? <NuxtLink href="/auth/register" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Register</NuxtLink>
             </p>
           </form>
         </div>

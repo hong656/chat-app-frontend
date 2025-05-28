@@ -12,5 +12,11 @@ export default defineNuxtConfig({
   },
   plugins: [
     '~/plugins/auth.js'
-  ]
+  ],
+  modules: ['@nuxtjs/color-mode'],
+  colorMode: {
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'light'
+  }
 })
