@@ -50,17 +50,17 @@
               <p class="text-gray-400 mt-1">
                 It's {{ currentTime }} ({{ timezone }})
               </p>
-              <!-- 🔴 DYNAMIC: Early/late status calculated from API -->
-              <p class="text-gray-400 mt-1" v-if="arrivalStatus">
-                {{ arrivalStatus }}
-              </p>
             </div>
-            <!-- 🔴 DYNAMIC: Early status badge -->
             <span 
-              v-if="isEarly" 
-              class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium"
+              v-if="arrivalStatus"
+              :class="[
+                'px-3 py-1 rounded-full text-sm font-medium',
+                arrivalStatus === 'Early' ? 'bg-green-500 text-white' :
+                arrivalStatus === 'Regular' ? 'bg-blue-500 text-white' :
+                'bg-red-500 text-white'
+              ]"
             >
-              Early
+              {{ arrivalStatus }}
             </span>
           </div>
 
@@ -651,35 +651,42 @@ const fetchTodayAttendance = async () => {
     }
     
     // Calculate arrival status
+    const currentTime = new Date()
+    const currentHours = currentTime.getHours()
+    const currentMinutes = currentTime.getMinutes()
+    const currentTimeInMinutes = currentHours * 60 + currentMinutes
+
+    // Define time thresholds in minutes (8:00 = 480, 8:15 = 495)
+    const earlyThreshold = 480 // 8:00
+    const lateThreshold = 495  // 8:15
+
     if (response.punch_in) {
       const punchIn = new Date(response.punch_in)
-      const scheduledTime = new Date()
-      scheduledTime.setHours(9, 0, 0, 0) // Assuming 9 AM scheduled time
-      
-      const diffMs = scheduledTime - punchIn
-      const diffMinutes = Math.floor(diffMs / (1000 * 60))
-      
-      if (diffMinutes > 0) {
+      const punchInHours = punchIn.getHours()
+      const punchInMinutes = punchIn.getMinutes()
+      const punchInTimeInMinutes = punchInHours * 60 + punchInMinutes
+
+      if (punchInTimeInMinutes < earlyThreshold) {
         isEarly.value = true
-        const hours = Math.floor(diffMinutes / 60)
-        const minutes = diffMinutes % 60
-        if (hours > 0) {
-          arrivalStatus.value = `You came ${hours} hour${hours > 1 ? 's' : ''} and ${minutes} minute${minutes > 1 ? 's' : ''} early today!`
-        } else {
-          arrivalStatus.value = `You came ${minutes} minute${minutes > 1 ? 's' : ''} early today!`
-        }
-      } else if (diffMinutes < 0) {
-        isEarly.value = false
-        const lateMins = Math.abs(diffMinutes)
-        const hours = Math.floor(lateMins / 60)
-        const minutes = lateMins % 60
-        if (hours > 0) {
-          arrivalStatus.value = `You are ${hours} hour${hours > 1 ? 's' : ''} and ${minutes} minute${minutes > 1 ? 's' : ''} late today.`
-        } else {
-          arrivalStatus.value = `You are ${minutes} minute${minutes > 1 ? 's' : ''} late today.`
-        }
+        arrivalStatus.value = 'Early'
+      } else if (punchInTimeInMinutes >= earlyThreshold && punchInTimeInMinutes <= lateThreshold) {
+        isEarly.value = true
+        arrivalStatus.value = 'Regular'
       } else {
-        arrivalStatus.value = 'You arrived right on time today!'
+        isEarly.value = false
+        arrivalStatus.value = 'Late'
+      }
+    } else {
+      // Default display when no punch-in data
+      if (currentTimeInMinutes < earlyThreshold) {
+        isEarly.value = true
+        arrivalStatus.value = 'Early'
+      } else if (currentTimeInMinutes >= earlyThreshold && currentTimeInMinutes <= lateThreshold) {
+        isEarly.value = true
+        arrivalStatus.value = 'Regular'
+      } else {
+        isEarly.value = false
+        arrivalStatus.value = 'Late'
       }
     }
     
@@ -689,7 +696,6 @@ const fetchTodayAttendance = async () => {
   }
 }
 
-// 🔴 LIFECYCLE: Fetch data on component mount
 onMounted(async () => {
   try {
     // Fetch today's attendance data first

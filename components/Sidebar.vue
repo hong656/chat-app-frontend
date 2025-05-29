@@ -34,6 +34,9 @@
             <NuxtLink to="/users/create" class="block py-2 px-8 rounded transition duration-200 hover:bg-gray-700">
               Create User
             </NuxtLink>
+            <NuxtLink to="/users/attandance" class="block py-2 px-8 rounded transition duration-200 hover:bg-gray-700">
+              Attendance
+            </NuxtLink>
           </div>
         </div>
 
