@@ -5,7 +5,7 @@
             <slot name="right"></slot>
             <NuxtLink to="/profile">
                 <div class="text-3xl font-bold pfp">
-                    P
+                    A
                 </div>
             </NuxtLink>
         </div>

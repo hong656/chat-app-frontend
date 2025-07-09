@@ -47,26 +47,6 @@
               <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
             </div>
   
-            <!-- Role Field -->
-            <div class="space-y-2">
-              <label for="role" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Role <span class="text-red-500">*</span>
-              </label>
-              <select
-                id="role"
-                v-model="form.role"
-                required
-                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 dark:bg-gray-700 dark:text-white"
-                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.role }"
-              >
-                <option value="1">Employee</option>
-                <option value="2">Internship</option>
-                <option value="3">Supervisor</option>
-                <option value="4">Manager</option>
-              </select>
-              <p v-if="errors.role" class="text-red-500 text-sm mt-1">{{ errors.role }}</p>
-            </div>
-  
             <!-- Password Field -->
             <div class="space-y-2">
               <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -203,7 +183,6 @@ export default {
         form: {
             name: '',
             email: '',
-            role: '',
             password: '',
             password_confirmation: ''
         },
@@ -233,11 +212,6 @@ export default {
             this.errors.email = 'Please enter a valid email address'
         } else if (this.form.email.length > 191) {
             this.errors.email = 'Email must be less than 191 characters'
-        }
-        
-        // Role validation
-        if (!this.form.role) {
-            this.errors.role = 'Role is required'
         }
         
         // Password validation
@@ -272,7 +246,6 @@ export default {
             const payload = {
             name: this.form.name.trim(),
             email: this.form.email.trim(),
-            role: parseInt(this.form.role),
             password: this.form.password,
             password_confirmation: this.form.password_confirmation
             }
@@ -310,7 +283,6 @@ export default {
         this.form = {
             name: '',
             email: '',
-            role: '',
             password: '',
             password_confirmation: ''
         }

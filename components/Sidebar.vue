@@ -12,13 +12,6 @@
 
       <!-- Nav -->
       <nav>
-        <!-- Dashboard -->
-        <div class="px-4 py-2">
-          <NuxtLink to="/dashboard" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
-            Dashboard
-          </NuxtLink>
-        </div>
-
         <!-- Users Dropdown -->
         <div class="px-4 py-2">
           <button @click="toggleDropdown('users')" class="flex items-center justify-between w-full py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
@@ -34,26 +27,20 @@
             <NuxtLink to="/users/create" class="block py-2 px-8 rounded transition duration-200 hover:bg-gray-700">
               Create User
             </NuxtLink>
-            <NuxtLink to="/users/attandance" class="block py-2 px-8 rounded transition duration-200 hover:bg-gray-700">
-              Attendance
-            </NuxtLink>
           </div>
         </div>
 
-        <!-- Settings Dropdown -->
+        <!-- Chats Dropdown -->
         <div class="px-4 py-2">
-          <button @click="toggleDropdown('settings')" class="flex items-center justify-between w-full py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
-            <span>Settings</span>
-            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': openDropdown === 'settings' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button @click="toggleDropdown('chats')" class="flex items-center justify-between w-full py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+            <span>Chats</span>
+            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': openDropdown === 'chats' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div v-show="openDropdown === 'settings'" class="mt-2 space-y-2">
-            <NuxtLink to="/settings/general" class="block py-2 px-8 rounded transition duration-200 hover:bg-gray-700">
-              General
-            </NuxtLink>
-            <NuxtLink to="/settings/security" class="block py-2 px-8 rounded transition duration-200 hover:bg-gray-700">
-              Security
+          <div v-show="openDropdown === 'chats'" class="mt-2 space-y-2">
+            <NuxtLink to="/chats/all-chats" class="block py-2 px-8 rounded transition duration-200 hover:bg-gray-700">
+              All Chats
             </NuxtLink>
           </div>
         </div>
