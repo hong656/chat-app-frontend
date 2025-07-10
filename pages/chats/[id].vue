@@ -94,7 +94,10 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const user_id = ref(route.params.id);
+
+// **RENAME THIS TO `chatId`** to avoid confusion
+const chatId = ref(route.params.id);
+
 const messages = ref([]);
 const newMessage = ref('');
 const chatMessagesContainer = ref(null);
@@ -103,6 +106,11 @@ const apiUrl = 'http://127.0.0.1:8000/api/messages';
 const chatApiUrl = 'http://127.0.0.1:8000/api/chat';
 const token = ref('');
 const chatName = ref('Loading...');
+
+// Fetch logged in user's profile.
+const loggedInUserId = ref(null);
+
+// The Nuxt app instance
 const nuxtApp = useNuxtApp();
 const echo = nuxtApp.$echo;
 
@@ -110,21 +118,40 @@ const messageToDeleteId = ref(null);
 const deleteOption = ref('me');
 const isDeleteModalOpen = ref(false);
 
+async function fetchUserProfile() {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/profile', {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    loggedInUserId.value = response.data.data.id;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+  }
+}
+
 onMounted(async () => {
   if (process.client) {
     token.value = localStorage.getItem('token') || '';
   }
 
+  await fetchUserProfile(); // Fetch the user's profile
   await fetchChatData();
   await fetchMessages();
 
-  console.log('[Echo] Subscribing to chat channel:', `chat.${user_id.value}`);
-  echo.private(`chat.${user_id.value}`)
+  // **LOG THE `chatId` HERE TO VERIFY IT**
+  console.log('[Echo] Subscribing to chat channel:', `chat.${chatId.value}`);
+
+  // **USE `chatId` HERE**
+  echo.private(`chat.${chatId.value}`)
     .listen('MessageSent', (event) => {
-      console.log('[Echo] Received MessageSent:', event)
+      console.log('[Echo] Received MessageSent:', event);
 
       const newMsg = event.message;
-      newMsg.is_you = newMsg.sender.user_id === getUserId();
+
+      // **USE `loggedInUserId` HERE**
+      newMsg.is_you = newMsg.sender.user_id === loggedInUserId.value;
       messages.value.push(newMsg);
 
       nextTick(() => {
@@ -152,7 +179,7 @@ const confirmDelete = async () => {
 
 async function fetchChatData() {
   try {
-    const response = await axios.get(`${chatApiUrl}/${user_id.value}`, {
+    const response = await axios.get(`${chatApiUrl}/${chatId.value}`, { // USE chatId here
       headers: {
         Authorization: `Bearer ${token.value}`,
         Accept: 'application/json',
@@ -179,7 +206,7 @@ async function fetchChatData() {
 
 async function fetchMessages() {
   try {
-    const response = await axios.get(`${apiUrl}/${user_id.value}`, {
+    const response = await axios.get(`${apiUrl}/${chatId.value}`, {  // USE chatId here
       headers: {
         Authorization: `Bearer ${token.value}`,
         Accept: 'application/json',
@@ -205,7 +232,7 @@ async function sendMessage() {
     await axios.post(
       apiUrl,
       {
-        chat_id: user_id.value,
+        chat_id: chatId.value,  // USE chatId here
         message_type: 'text',
         text: newMessage.value,
       },
