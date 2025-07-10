@@ -140,10 +140,6 @@ onMounted(async () => {
   await fetchChatData();
   await fetchMessages();
 
-  // **LOG THE `chatId` HERE TO VERIFY IT**
-  console.log('[Echo] Subscribing to chat channel:', `chat.${chatId.value}`);
-
-  // **USE `chatId` HERE**
   echo.private(`chat.${chatId.value}`)
     .listen('MessageSent', (event) => {
       console.log('[Echo] Received MessageSent:', event);
@@ -157,6 +153,13 @@ onMounted(async () => {
       nextTick(() => {
         scrollTarget.value?.scrollIntoView({ behavior: 'smooth' });
       });
+    })
+    .listen('MessageDeleted', (event) => {
+      console.log('[Echo] Received MessageDeleted:', event);
+
+      messages.value = messages.value.filter(
+        (message) => message.message_id != event.messageId
+      );
     });
 });
 
@@ -266,10 +269,11 @@ async function deleteMessage(messageId, deleteForEveryone = false) {
       },
       data: {
         delete_for_everyone: deleteForEveryone,
-      },
+      }
     });
-
-    messages.value = messages.value.filter((message) => message.message_id !== messageId);
+    if (!deleteForEveryone) {
+      await fetchMessages();
+    }
   } catch (error) {
     console.error('Error deleting message:', error);
   }
