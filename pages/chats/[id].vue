@@ -125,7 +125,7 @@ async function fetchUserProfile() {
         Authorization: `Bearer ${token.value}`,
       },
     });
-    loggedInUserId.value = response.data.data.id;
+    loggedInUserId.value = response.data.data.user_id;
   } catch (error) {
     console.error('Error fetching user profile:', error);
   }
@@ -248,7 +248,6 @@ async function sendMessage() {
     );
 
     newMessage.value = '';
-    await fetchMessages();
   } catch (error) {
     console.error('Error sending message:', error);
     if (error.response && error.response.status === 401) {
