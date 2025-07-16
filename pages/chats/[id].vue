@@ -146,7 +146,6 @@ onMounted(async () => {
 
       const newMsg = event.message;
 
-      // **USE `loggedInUserId` HERE**
       newMsg.is_you = newMsg.sender.user_id === loggedInUserId.value;
       messages.value.push(newMsg);
 
